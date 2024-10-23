@@ -1,6 +1,6 @@
 # OSRS Packet Updater for Ethan's API
 
-This project is a packet updater for Old School RuneScape (OSRS) that automatically updates the constants in Ethan's `ObfuscatedNames` class by reading patterns in the OSRS client. The primary purpose is to find the obfuscated names and update the API to reflect any changes in the client.
+This project is a packet updater for Old School RuneScape (OSRS) that automatically updates the constants in [Ethan's](https://github.com/Ethan-Vann/EthanVannPlugins) `ObfuscatedNames` class by reading patterns in the OSRS client. The primary purpose is to find the obfuscated names and update the API to reflect any changes in the client.
 
 ## Features
 
