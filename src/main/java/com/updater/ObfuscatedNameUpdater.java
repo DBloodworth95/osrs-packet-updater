@@ -87,6 +87,7 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new PacketBufferNodeFieldName());
         patternSearchers.add(new EventMouseClickObfuscatedName());
         patternSearchers.add(new AddNodeMethodName());
+        patternSearchers.add(new BufferOffsetField());
     }
 
     private static void searchDirectory(File dir) {
