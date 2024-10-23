@@ -18,15 +18,6 @@ public class ObfuscatedNames {
     public static final String JX_LEGACY_VALUE_FIELD = "ap";
     public static final String JX_LEGACY_VALUE_CLASS = "ve";
 
-    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseInfo";
-    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseX";
-    public static final String EVENT_MOUSE_CLICK_WRITE3 = "mouseY";
-    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][]{
-            {"r 8", "v"},
-            {"r 8", "v"},
-            {"r 8", "v"},
-    };
-
     /*
          Invokes
      */
@@ -36,6 +27,15 @@ public class ObfuscatedNames {
     /*
         Obfuscated names for packets
      */
+    public static final String EVENT_MOUSE_CLICK_WRITE1 = "mouseInfo";
+    public static final String EVENT_MOUSE_CLICK_WRITE2 = "mouseX";
+    public static final String EVENT_MOUSE_CLICK_WRITE3 = "mouseY";
+    public static final String[][] EVENT_MOUSE_CLICK_WRITES = new String[][]{
+            {"r 8", "v"},
+            {"r 8", "v"},
+            {"r 8", "v"},
+    };
+
     public static final String EVENT_MOUSE_CLICK_OBFUSCATEDNAME = "ci";
     public static final String clientPacketClassName = "mm";
     public static final String packetWriterFieldName = "in";
