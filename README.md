@@ -27,8 +27,8 @@ Example: Finding the `addNodeMethodName`
 
 ## Usage
 
-1. *Provide the Gamepack Path*: You need to supply the absolute path to the gamepack directory as a program argument. Gamepacks are located in the `nonfree` directory, e.g., `nonfree/gamepacks/225`, where `225` is the revision number of the OSRS client.
-2. *Run the Updater:* The main entry point is the `ObfuscatedNameUpdater` class.
+1. **Provide the Gamepack Path**: You need to supply the absolute path to the gamepack directory as a program argument. Gamepacks are located in the `nonfree` directory, e.g., `nonfree/gamepacks/225`, where `225` is the revision number of the OSRS client.
+2. **Run the Updater:** The main entry point is the `ObfuscatedNameUpdater` class.
 
 Example:
 
