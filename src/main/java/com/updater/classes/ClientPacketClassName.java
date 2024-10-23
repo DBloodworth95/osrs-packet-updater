@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.classes;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -20,7 +23,7 @@ public class ClientPacketClassName implements PatternSearcher {
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         Matcher matcher = classPattern.matcher(content);
         if (matcher.find()) {
             obfuscatedClassName = matcher.group(1);

@@ -1,5 +1,9 @@
 package com.updater;
 
+import com.updater.classes.*;
+import com.updater.fields.*;
+import com.updater.methods.AddNodeMethodName;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +16,7 @@ import java.util.Map;
 public class ObfuscatedNameUpdater {
     private static final List<PatternSearcher> patternSearchers = new ArrayList<>();
     private static final Map<PatternSearcher, String> searcherResults = new HashMap<>();
+    private static final SearchContext context = new SearchContext();
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -19,7 +24,9 @@ public class ObfuscatedNameUpdater {
             System.exit(1);
         }
 
-        registerSearchers();
+        registerClassSearchers();
+        registerMethodSearchers();
+        registerFieldSearchers();
 
         File dir = new File(args[0]);
         if (!dir.isDirectory()) {
@@ -42,11 +49,19 @@ public class ObfuscatedNameUpdater {
         }
     }
 
-    private static void registerSearchers() {
+    private static void registerClassSearchers() {
         patternSearchers.add(new MouseHandlerLastPressedTimeMillisClass());
-        patternSearchers.add(new MouseHandlerLastPressedTimeMillisField());
-        patternSearchers.add(new ClassContainingGetPacketBufferNodeName());
         patternSearchers.add(new ClientPacketClassName());
+        patternSearchers.add(new PacketBufferNodeClassName());
+        patternSearchers.add(new ClassContainingGetPacketBufferNodeName());
+    }
+
+    private static void registerMethodSearchers() {
+        patternSearchers.add(new AddNodeMethodName());
+    }
+
+    private static void registerFieldSearchers() {
+        patternSearchers.add(new MouseHandlerLastPressedTimeMillisField());
 
         PacketWriterClassName packetWriterClassSearcher = new PacketWriterClassName();
         patternSearchers.add(packetWriterClassSearcher);
@@ -54,13 +69,13 @@ public class ObfuscatedNameUpdater {
         final PacketWriterFieldName[] fieldSearcherHolder = new PacketWriterFieldName[1];
         patternSearchers.add(new PatternSearcher() {
             @Override
-            public boolean matches(File file, String content) {
+            public boolean matches(File file, String content, SearchContext context) {
                 String packetWriterClassName = packetWriterClassSearcher.getObfuscatedName();
                 if (!packetWriterClassName.equals("Unknown")) {
                     if (fieldSearcherHolder[0] == null) {
                         fieldSearcherHolder[0] = new PacketWriterFieldName(packetWriterClassName);
                     }
-                    return fieldSearcherHolder[0].matches(file, content);
+                    return fieldSearcherHolder[0].matches(file, content, context);
                 }
                 return false;
             }
@@ -83,10 +98,8 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new ClientMillisMultiplier());
         patternSearchers.add(new ClientMillisField());
         patternSearchers.add(new IsaacCipherFieldName());
-        patternSearchers.add(new PacketBufferNodeClassName());
         patternSearchers.add(new PacketBufferNodeFieldName());
         patternSearchers.add(new EventMouseClickObfuscatedName());
-        patternSearchers.add(new AddNodeMethodName());
         patternSearchers.add(new BufferOffsetField());
     }
 
@@ -116,8 +129,9 @@ public class ObfuscatedNameUpdater {
     private static void searchInFile(File file) throws IOException {
         String content = readFile(file);
         for (PatternSearcher searcher : patternSearchers) {
-            if (searcher.matches(file, content)) {
+            if (searcher.matches(file, content, context)) {
                 searcherResults.put(searcher, searcher.getObfuscatedName());
+                context.addResolvedName(searcher.getDescription(), searcher.getObfuscatedName());
             }
         }
     }

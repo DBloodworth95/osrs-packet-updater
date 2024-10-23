@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.fields;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +26,7 @@ public class BufferOffsetField implements PatternSearcher {
     private final List<String> publicObjectFields = new ArrayList<>();
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
             String currentClassName = null;

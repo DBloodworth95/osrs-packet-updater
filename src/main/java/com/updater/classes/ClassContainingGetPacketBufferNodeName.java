@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.classes;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -31,7 +34,7 @@ public class ClassContainingGetPacketBufferNodeName implements PatternSearcher {
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         int count260 = countMatches(content, pattern260);
         int count100 = countMatches(content, pattern100);
         int count10000 = countMatches(content, pattern10000);

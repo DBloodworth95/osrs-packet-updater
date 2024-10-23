@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.fields;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -34,7 +37,7 @@ public class IsaacCipherFieldName implements PatternSearcher {
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         Matcher classMatcher = classPattern.matcher(content);
         if (classMatcher.find()) {
             Matcher publicPropertyMatcher = publicPropertyPattern.matcher(content);

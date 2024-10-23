@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.fields;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -6,25 +9,26 @@ import java.util.regex.Pattern;
 
 /*
  * Steps to find are as follows:
- * 1. Search client.java for a if statement which checks if a variable is > 32767L
- * 2. Find the line of code that occurs before this, it should be a simple math equation.
- * 3. There will be 2 long values in this equation, we need the second one.
+ * 1. Look in client.java for a if statement which checks if a variable is > 32767L.
+ * 2. There will be a equation above it with 2 long fields.
+ * 3. We want the long value that is first in the equation.
+ * 4. Alternatively it's the value that's multiplied by MouseHandler_lastPressedTimeMillisClass.MouseHandler_lastPressedTimeMillisField
  */
-public class ClientMillisMultiplier implements PatternSearcher {
+public class MouseHandlerMillisMultiplier implements PatternSearcher {
     private static final String IF_STATEMENT_PATTERN = "if\\s*\\(\\s*\\w+\\s*>\\s*32767L\\s*\\)";
     private static final String LONG_ASSIGNMENT_PATTERN = "^\\s*long\\s+\\w+\\s*=.*L.*;";
 
     private final Pattern ifPattern;
     private final Pattern longAssignmentPattern;
-    private String clientMillisMultiplier = "Unknown";
+    private String mouseHandlerMillisMultiplier = "Unknown";
 
-    public ClientMillisMultiplier() {
+    public MouseHandlerMillisMultiplier() {
         this.ifPattern = Pattern.compile(IF_STATEMENT_PATTERN);
         this.longAssignmentPattern = Pattern.compile(LONG_ASSIGNMENT_PATTERN, Pattern.MULTILINE);
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         Matcher ifMatcher = ifPattern.matcher(content);
         while (ifMatcher.find()) {
             int ifStatementIndex = ifMatcher.start();
@@ -34,7 +38,7 @@ public class ClientMillisMultiplier implements PatternSearcher {
                 String longAssignmentLine = longMatcher.group(0);
                 String[] longValues = extractLongValues(longAssignmentLine);
                 if (longValues.length == 2) {
-                    clientMillisMultiplier = longValues[1];
+                    mouseHandlerMillisMultiplier = longValues[0];
                     return true;
                 } else {
                     System.out.println("Could not extract two long values ending with 'L' from the assignment line!");
@@ -49,12 +53,12 @@ public class ClientMillisMultiplier implements PatternSearcher {
 
     @Override
     public String getObfuscatedName() {
-        return clientMillisMultiplier;
+        return mouseHandlerMillisMultiplier;
     }
 
     @Override
     public String getDescription() {
-        return "clientMillisMultiplier";
+        return "mouseHandlerMillisMultiplier";
     }
 
     private String[] extractLongValues(String longAssignmentLine) {
@@ -63,7 +67,7 @@ public class ClientMillisMultiplier implements PatternSearcher {
         String[] longValues = new String[2];
         int index = 0;
         while (matcher.find() && index < 2) {
-            longValues[index] = matcher.group(0).replace("L", "");  // Remove 'L'
+            longValues[index] = matcher.group(0).replace("L", "");
             index++;
         }
         return longValues;

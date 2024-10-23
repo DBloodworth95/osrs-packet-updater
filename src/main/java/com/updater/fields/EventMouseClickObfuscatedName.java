@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.fields;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +40,7 @@ public class EventMouseClickObfuscatedName implements PatternSearcher {
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         if (canFindGetPacketBufferNodeName(content)) {
             try {
                 File clientFile = findClientFile(file.getParentFile());

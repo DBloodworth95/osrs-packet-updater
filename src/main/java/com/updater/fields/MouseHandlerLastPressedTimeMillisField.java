@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.fields;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +20,7 @@ public class MouseHandlerLastPressedTimeMillisField implements PatternSearcher {
     private String lastAssignedField = "Unknown";
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
             List<String> properties = new ArrayList<>();

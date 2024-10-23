@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.classes;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.util.regex.Matcher;
@@ -29,7 +32,7 @@ public class PacketWriterClassName implements PatternSearcher {
     }
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         Matcher classMatcher = classPattern.matcher(content);
         Matcher instantiation5000Matcher = instantiation5000Pattern.matcher(content);
         Matcher instantiation40000Matcher = instantiation40000Pattern.matcher(content);

@@ -1,4 +1,7 @@
-package com.updater;
+package com.updater.classes;
+
+import com.updater.PatternSearcher;
+import com.updater.SearchContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +17,7 @@ public class PacketBufferNodeClassName implements PatternSearcher {
     private String packetBufferNodeClassName = "Unknown";
 
     @Override
-    public boolean matches(File file, String content) {
+    public boolean matches(File file, String content, SearchContext context) {
         try {
             List<String> lines = Files.readAllLines(file.toPath());
             String currentClassName = null;
