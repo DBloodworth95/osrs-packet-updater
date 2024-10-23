@@ -34,7 +34,7 @@ public class BufferOffsetField implements PatternSearcher {
 
             for (String line : lines) {
                 line = line.trim();
-                if (line.startsWith("public class") && line.contains("extends")) {
+                if (line.contains("class") && line.contains("extends")) {
                     String[] parts = line.split("\\s+");
                     if (parts.length >= 3) {
                         currentClassName = parts[2];
