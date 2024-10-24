@@ -102,9 +102,11 @@ public class ObfuscatedNameUpdater {
     private static void searchInFile(File file) throws IOException {
         String content = readFile(file);
         for (PatternSearcher searcher : patternSearchers) {
-            if (searcher.matches(file, content, context)) {
-                searcherResults.put(searcher, searcher.getObfuscatedName());
-                context.addResolvedName(searcher.getDescription(), searcher.getObfuscatedName());
+            if (searcherResults.get(searcher).equals("Not Found")) {
+                if (searcher.matches(file, content, context)) {
+                    searcherResults.put(searcher, searcher.getObfuscatedName());
+                    context.addResolvedName(searcher.getDescription(), searcher.getObfuscatedName());
+                }
             }
         }
     }
