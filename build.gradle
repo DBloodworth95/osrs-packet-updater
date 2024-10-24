@@ -20,6 +20,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     implementation("org.benf:cfr:0.152")
+    implementation 'fr.inria.gforge.spoon:spoon-core:9.1.0'
 
     testImplementation 'junit:junit:4.12'
     testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
