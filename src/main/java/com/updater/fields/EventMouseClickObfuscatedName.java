@@ -18,74 +18,32 @@ import java.util.regex.Pattern;
  * 4. We need extract the first argument and grab the field name.
  */
 public class EventMouseClickObfuscatedName implements PatternSearcher {
-
-    private static final String PATTERN_260 = "\\(260\\);";
-    private static final String PATTERN_100 = "\\(100\\);";
-    private static final String PATTERN_10000 = "\\(10000\\);";
     private static final String CLIENT_FILE = "client.java";
 
-    private final Pattern pattern260;
-    private final Pattern pattern100;
-    private final Pattern pattern10000;
-
-    private String obfuscatedClassName;
+    private String classContainingGetPacketBufferNode;
     private String extractedFieldName;
 
     public EventMouseClickObfuscatedName() {
-        this.pattern260 = Pattern.compile(PATTERN_260);
-        this.pattern100 = Pattern.compile(PATTERN_100);
-        this.pattern10000 = Pattern.compile(PATTERN_10000);
-        this.obfuscatedClassName = "Unknown";
+        this.classContainingGetPacketBufferNode = "Unknown";
         this.extractedFieldName = "Unknown";
     }
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
-        if (canFindGetPacketBufferNodeName(content)) {
-            try {
-                File clientFile = findClientFile(file.getParentFile());
-                if (clientFile != null) {
-                    String clientContent = new String(Files.readAllBytes(clientFile.toPath()));
-                    if (searchClientForCondition(clientContent)) {
-                        return true;
-                    }
+        classContainingGetPacketBufferNode = context.getResolvedName("classContainingGetPacketBufferNodeName");
+        try {
+            File clientFile = findClientFile(file.getParentFile());
+            if (clientFile != null) {
+                String clientContent = new String(Files.readAllBytes(clientFile.toPath()));
+                if (searchClientForCondition(clientContent)) {
+                    return true;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return false;
-    }
-
-    private boolean canFindGetPacketBufferNodeName(String content) {
-        int count260 = countMatches(content, pattern260);
-        int count100 = countMatches(content, pattern100);
-        int count10000 = countMatches(content, pattern10000);
-
-        if (count260 == 2 && count100 == 1 && count10000 == 1) {
-            obfuscatedClassName = extractClassName(content);
-            return true;
-        }
-        return false;
-    }
-
-    private int countMatches(String content, Pattern pattern) {
-        Matcher matcher = pattern.matcher(content);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
-    private String extractClassName(String content) {
-        Pattern classPattern = Pattern.compile("class\\s+(\\w+)");
-        Matcher matcher = classPattern.matcher(content);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return "Unknown";
     }
 
     private File findClientFile(File directory) {
@@ -117,7 +75,7 @@ public class EventMouseClickObfuscatedName implements PatternSearcher {
                 continue;
             }
 
-            if (foundCondition && line.contains(obfuscatedClassName)) {
+            if (foundCondition && line.contains(classContainingGetPacketBufferNode)) {
                 String argument = extractFirstArgument(line);
                 if (argument != null) {
                     extractedFieldName = argument;

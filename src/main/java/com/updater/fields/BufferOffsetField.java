@@ -11,50 +11,30 @@ import java.util.List;
 
 /*
  * Steps to find are as follows:
- * 1. Search for a class which instantiates an array of itself with a size of 300.
- * 2. This class should also extend something.
- * 3. Search for methods which have 3 or more else if blocks.
- * 4. Those else if's will be trying to assign the same variable, e.g: var2.x = new y(20);
- * 5. Extract x, this is the PacketBufferNodeFieldName.
- * 6. Once PacketBufferNodeFieldName is found, look back to the class properties to find its type.
- * 7. Find what the type extends.
- * 8. Once found, check that class it should have a int property that isn't static or final and isn't instantiated
+ * 1. Search for a class which instantiates an array of itself with a size of 300, this is the packet buffer node class.
+ * 2. Search for methods which have 3 or more else if blocks.
+ * 3. Those else if's will be trying to assign the same variable, e.g: var2.x = new y(20);
+ * 4. Extract x, this is the PacketBufferNodeFieldName.
+ * 5. Once PacketBufferNodeFieldName is found, look back to the class properties to find its type.
+ * 6. Find what the type extends.
+ * 7. Once found, check that class it should have a int property that isn't static or final and isn't instantiated
  */
 public class BufferOffsetField implements PatternSearcher {
     private String bufferOffsetFieldName = "Unknown";
-    private String bufferOffsetClassName = null;
     private final List<String> publicObjectFields = new ArrayList<>();
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
         try {
-            List<String> lines = Files.readAllLines(file.toPath());
-            String currentClassName = null;
-            boolean classFound = false;
-            boolean inMethod = false;
-            int elseIfCount = 0;
-            int openBracesCount = 0;
-
-            for (String line : lines) {
-                line = line.trim();
-                if (line.contains("class") && line.contains("extends")) {
-                    String[] parts = line.split("\\s+");
-                    if (parts.length >= 3) {
-                        currentClassName = parts[2];
-                    }
-                }
-
-                if (currentClassName != null && line.contains("new " + currentClassName + "[300]")) {
-                    bufferOffsetClassName = currentClassName;
-                    classFound = true;
-                    break;
-                }
-            }
-
-            if (!classFound) {
+            String bufferOffsetClassName = context.getResolvedName("packetBufferNodeClassName");
+            if (bufferOffsetClassName.equalsIgnoreCase("unknown") || bufferOffsetClassName.equalsIgnoreCase("not found")) {
                 return false;
             }
 
+            List<String> lines = Files.readAllLines(file.toPath());
+            boolean inMethod = false;
+            int elseIfCount = 0;
+            int openBracesCount = 0;
             for (String line : lines) {
                 line = line.trim();
                 if (line.startsWith("public") && !line.contains("static") && !line.contains("final") && line.contains(";")) {

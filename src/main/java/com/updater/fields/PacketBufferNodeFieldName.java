@@ -11,46 +11,32 @@ import java.util.List;
 
 /*
  * Steps to find are as follows:
- * 1. Search for a class which instantiates an array of itself with a size of 300.
- * 2. This class should also extend something.
- * 3. Search for methods which have 3 or more else if blocks.
- * 4. Those else if's will be trying to assign the same variable, e.g: var2.x = new y(20);
- * 5. Extract x.
+ * 1. Grab the packet buffer node class name.
+ * 2. Search for methods which have 3 or more else if blocks.
+ * 3. Those else if's will be trying to assign the same variable, e.g: var2.x = new y(20);
+ * 4. Extract x.
  */
 public class PacketBufferNodeFieldName implements PatternSearcher {
     private String packetBufferFieldName = "Unknown";
-    private String packetBufferNodeClassName = null;
     private final List<String> publicObjectFields = new ArrayList<>();
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
         try {
+            String packetBufferNodeClassName = context.getResolvedName("packetBufferNodeClassName");
+            if (packetBufferNodeClassName.equalsIgnoreCase("unknown") || packetBufferNodeClassName.equalsIgnoreCase("not found")) {
+                return false;
+            }
+
+            String packetBufferNodeFieldName = context.getResolvedName("packetBufferNodeFieldName");
+            if (!packetBufferNodeFieldName.equalsIgnoreCase("unknown") && !packetBufferNodeFieldName.equalsIgnoreCase("not found")) {
+                return true;
+            }
+
             List<String> lines = Files.readAllLines(file.toPath());
-            String currentClassName = null;
-            boolean classFound = false;
             boolean inMethod = false;
             int elseIfCount = 0;
             int openBracesCount = 0;
-
-            for (String line : lines) {
-                line = line.trim();
-                if (line.startsWith("public class") && line.contains("extends")) {
-                    String[] parts = line.split("\\s+");
-                    if (parts.length >= 3) {
-                        currentClassName = parts[2];
-                    }
-                }
-
-                if (currentClassName != null && line.contains("new " + currentClassName + "[300]")) {
-                    packetBufferNodeClassName = currentClassName;
-                    classFound = true;
-                    break;
-                }
-            }
-
-            if (!classFound) {
-                return false;
-            }
 
             for (String line : lines) {
                 line = line.trim();
@@ -58,7 +44,7 @@ public class PacketBufferNodeFieldName implements PatternSearcher {
                 if (line.startsWith("public") && !line.contains("static") && !line.contains("final") && line.contains(";")) {
                     String[] parts = line.split("\\s+");
                     if (parts.length >= 3 && !isPrimitive(parts[1]) && !parts[1].equals(packetBufferNodeClassName)) {
-                        publicObjectFields.add(parts[2].replace(";", ""));  // Store public object field
+                        publicObjectFields.add(parts[2].replace(";", ""));
                     }
                 }
 

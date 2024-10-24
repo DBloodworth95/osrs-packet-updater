@@ -16,21 +16,22 @@ import java.util.regex.Pattern;
  * 5. Failing that, it will be the only class level field in client.java which is of the packet write class type.
  */
 public class PacketWriterFieldName implements PatternSearcher {
-    private final Pattern fieldPattern;
-
     private String packetWriterFieldName = "Unknown";
-
-    public PacketWriterFieldName(String packetWriterClassName) {
-        this.fieldPattern = Pattern.compile("\\b" + packetWriterClassName + "\\s+(\\w+);");
-    }
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
+        String packetWriterClassName = context.getResolvedName("packetWriterClassName");
+        if (packetWriterClassName.equalsIgnoreCase("unknown") || packetWriterClassName.equalsIgnoreCase("not found")) {
+            return false;
+        }
+
+        Pattern fieldPattern = getPacketWriterFieldPattern(packetWriterClassName);
         Matcher matcher = fieldPattern.matcher(content);
         if (matcher.find()) {
             packetWriterFieldName = matcher.group(1);
             return true;
         }
+
         return false;
     }
 
@@ -42,5 +43,9 @@ public class PacketWriterFieldName implements PatternSearcher {
     @Override
     public String getDescription() {
         return "packetWriterFieldName";
+    }
+
+    private Pattern getPacketWriterFieldPattern(String packetWriterClassName) {
+        return Pattern.compile("\\b" + packetWriterClassName + "\\s+(\\w+);");
     }
 }

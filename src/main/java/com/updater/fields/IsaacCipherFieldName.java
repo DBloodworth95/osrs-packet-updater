@@ -15,14 +15,10 @@ import java.util.regex.Pattern;
  * 4. The isaac cipher field name is the second x.
  */
 public class IsaacCipherFieldName implements PatternSearcher {
-    private static final String CLASS_PATTERN = "class\\s+(\\w+)\\s*\\{";
     private static final String PUBLIC_PROPERTY_PATTERN = "public\\s+(\\w+)\\s+(\\w+);";
-
     private static final String WHILE_TRUE_PATTERN = "while\\s*\\(true\\s*\\)\\s*\\{";
-
     private static final String CAST_PATTERN = "\\(\\w+\\)\\s*this\\.\\w+\\.\\w+\\(\\)";
 
-    private final Pattern classPattern;
     private final Pattern publicPropertyPattern;
     private final Pattern whileTruePattern;
     private final Pattern castPattern;
@@ -30,7 +26,6 @@ public class IsaacCipherFieldName implements PatternSearcher {
     private String isaacCipherFieldName = "Unknown";
 
     public IsaacCipherFieldName() {
-        this.classPattern = Pattern.compile(CLASS_PATTERN);
         this.publicPropertyPattern = Pattern.compile(PUBLIC_PROPERTY_PATTERN);
         this.whileTruePattern = Pattern.compile(WHILE_TRUE_PATTERN);
         this.castPattern = Pattern.compile(CAST_PATTERN);
@@ -38,8 +33,8 @@ public class IsaacCipherFieldName implements PatternSearcher {
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
-        Matcher classMatcher = classPattern.matcher(content);
-        if (classMatcher.find()) {
+        String packetWriterClassName = context.getResolvedName("packetWriterClassName");
+        if (!packetWriterClassName.equalsIgnoreCase("unknown") && !packetWriterClassName.equalsIgnoreCase("not found")) {
             Matcher publicPropertyMatcher = publicPropertyPattern.matcher(content);
             int publicPropertyCount = 0;
             while (publicPropertyMatcher.find()) {

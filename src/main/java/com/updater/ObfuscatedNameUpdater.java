@@ -54,6 +54,7 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new ClientPacketClassName());
         patternSearchers.add(new PacketBufferNodeClassName());
         patternSearchers.add(new ClassContainingGetPacketBufferNodeName());
+        patternSearchers.add(new PacketWriterClassName());
     }
 
     private static void registerMethodSearchers() {
@@ -61,39 +62,8 @@ public class ObfuscatedNameUpdater {
     }
 
     private static void registerFieldSearchers() {
+        patternSearchers.add(new PacketWriterFieldName());
         patternSearchers.add(new MouseHandlerLastPressedTimeMillisField());
-
-        PacketWriterClassName packetWriterClassSearcher = new PacketWriterClassName();
-        patternSearchers.add(packetWriterClassSearcher);
-
-        final PacketWriterFieldName[] fieldSearcherHolder = new PacketWriterFieldName[1];
-        patternSearchers.add(new PatternSearcher() {
-            @Override
-            public boolean matches(File file, String content, SearchContext context) {
-                String packetWriterClassName = packetWriterClassSearcher.getObfuscatedName();
-                if (!packetWriterClassName.equals("Unknown")) {
-                    if (fieldSearcherHolder[0] == null) {
-                        fieldSearcherHolder[0] = new PacketWriterFieldName(packetWriterClassName);
-                    }
-                    return fieldSearcherHolder[0].matches(file, content, context);
-                }
-                return false;
-            }
-
-            @Override
-            public String getObfuscatedName() {
-                if (fieldSearcherHolder[0] != null) {
-                    return fieldSearcherHolder[0].getObfuscatedName();
-                }
-                return "Unknown";
-            }
-
-            @Override
-            public String getDescription() {
-                return "packetWriterFieldName";
-            }
-        });
-
         patternSearchers.add(new MouseHandlerMillisMultiplier());
         patternSearchers.add(new ClientMillisMultiplier());
         patternSearchers.add(new ClientMillisField());

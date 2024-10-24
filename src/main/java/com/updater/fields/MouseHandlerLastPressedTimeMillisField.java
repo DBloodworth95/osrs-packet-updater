@@ -11,12 +11,11 @@ import java.util.List;
 
 /*
  * Steps to find are as follows:
- * 1. Look for a class which implements MouseListener, MouseMotionListener & FocusListener.
+ * 1. Look for a class which implements MouseListener, MouseMotionListener & FocusListener. This is the MouseHandlerLastPressedTimeMillis class.
  * 2. Look for fields in the class which are a public static long with an initialized value of 0L
  * 3. There should be 2, the field we want is the one that gets assigned last in methods where it is assigned.
  */
 public class MouseHandlerLastPressedTimeMillisField implements PatternSearcher {
-
     private String lastAssignedField = "Unknown";
 
     @Override
