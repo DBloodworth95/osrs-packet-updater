@@ -3,6 +3,7 @@ package com.updater;
 import com.updater.classes.*;
 import com.updater.fields.*;
 import com.updater.methods.AddNodeMethodName;
+import com.updater.methods.DoActionMethodName;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -55,10 +56,12 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new PacketBufferNodeClassName());
         patternSearchers.add(new ClassContainingGetPacketBufferNodeName());
         patternSearchers.add(new PacketWriterClassName());
+        patternSearchers.add(new DoActionClassName());
     }
 
     private static void registerMethodSearchers() {
         patternSearchers.add(new AddNodeMethodName());
+        patternSearchers.add(new DoActionMethodName());
     }
 
     private static void registerFieldSearchers() {
