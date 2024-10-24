@@ -75,6 +75,8 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new EventMouseClickObfuscatedName());
         patternSearchers.add(new BufferOffsetField());
         patternSearchers.add(new BufferArrayField());
+        patternSearchers.add(new OffsetMultiplier());
+        patternSearchers.add(new IndexMultiplier());
     }
 
     private static void searchDirectory(File dir) {
