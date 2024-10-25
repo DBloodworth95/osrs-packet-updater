@@ -4,6 +4,7 @@ import com.updater.classes.*;
 import com.updater.fields.*;
 import com.updater.methods.AddNodeMethodName;
 import com.updater.methods.DoActionMethodName;
+import com.updater.values.AddNodeGarbageValue;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +29,7 @@ public class ObfuscatedNameUpdater {
         registerClassSearchers();
         registerMethodSearchers();
         registerFieldSearchers();
+        registerValueSearchers();
 
         File dir = new File(args[0]);
         if (!dir.isDirectory()) {
@@ -77,6 +79,10 @@ public class ObfuscatedNameUpdater {
         patternSearchers.add(new BufferArrayField());
         patternSearchers.add(new OffsetMultiplier());
         patternSearchers.add(new IndexMultiplier());
+    }
+
+    private static void registerValueSearchers() {
+        patternSearchers.add(new AddNodeGarbageValue());
     }
 
     private static void searchDirectory(File dir) {
