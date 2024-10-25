@@ -1,4 +1,4 @@
-package com.updater.fields;
+package com.updater.values;
 
 import com.updater.PatternSearcher;
 import com.updater.SearchContext;
@@ -9,20 +9,19 @@ import java.util.regex.Pattern;
 
 /*
  * Steps to find are as follows:
- * 1. Look in client.java for a if statement which checks if a variable is > 32767L.
- * 2. There will be a equation above it with 2 long fields.
- * 3. We want the long value that is first in the equation.
- * 4. Alternatively it's the value that's multiplied by MouseHandler_lastPressedTimeMillisClass.MouseHandler_lastPressedTimeMillisField
+ * 1. Search client.java for a if statement which checks if a variable is > 32767L
+ * 2. Find the line of code that occurs before this, it should be a simple math equation.
+ * 3. There will be 2 long values in this equation, we need the second one.
  */
-public class MouseHandlerMillisMultiplier implements PatternSearcher {
+public class ClientMillisMultiplier implements PatternSearcher {
     private static final String IF_STATEMENT_PATTERN = "if\\s*\\(\\s*\\w+\\s*>\\s*32767L\\s*\\)";
     private static final String LONG_ASSIGNMENT_PATTERN = "^\\s*long\\s+\\w+\\s*=.*L.*;";
 
     private final Pattern ifPattern;
     private final Pattern longAssignmentPattern;
-    private String mouseHandlerMillisMultiplier = "Unknown";
+    private String clientMillisMultiplier = "Unknown";
 
-    public MouseHandlerMillisMultiplier() {
+    public ClientMillisMultiplier() {
         this.ifPattern = Pattern.compile(IF_STATEMENT_PATTERN);
         this.longAssignmentPattern = Pattern.compile(LONG_ASSIGNMENT_PATTERN, Pattern.MULTILINE);
     }
@@ -38,7 +37,7 @@ public class MouseHandlerMillisMultiplier implements PatternSearcher {
                 String longAssignmentLine = longMatcher.group(0);
                 String[] longValues = extractLongValues(longAssignmentLine);
                 if (longValues.length == 2) {
-                    mouseHandlerMillisMultiplier = longValues[0];
+                    clientMillisMultiplier = longValues[1];
                     return true;
                 } else {
                     System.out.println("Could not extract two long values ending with 'L' from the assignment line!");
@@ -53,12 +52,12 @@ public class MouseHandlerMillisMultiplier implements PatternSearcher {
 
     @Override
     public String getObfuscatedName() {
-        return mouseHandlerMillisMultiplier;
+        return clientMillisMultiplier;
     }
 
     @Override
     public String getDescription() {
-        return "mouseHandlerMillisMultiplier";
+        return "clientMillisMultiplier";
     }
 
     private String[] extractLongValues(String longAssignmentLine) {
@@ -67,7 +66,7 @@ public class MouseHandlerMillisMultiplier implements PatternSearcher {
         String[] longValues = new String[2];
         int index = 0;
         while (matcher.find() && index < 2) {
-            longValues[index] = matcher.group(0).replace("L", "");
+            longValues[index] = matcher.group(0).replace("L", "");  // Remove 'L'
             index++;
         }
         return longValues;

@@ -4,7 +4,7 @@ import com.updater.classes.*;
 import com.updater.fields.*;
 import com.updater.methods.AddNodeMethodName;
 import com.updater.methods.DoActionMethodName;
-import com.updater.values.AddNodeGarbageValue;
+import com.updater.values.*;
 
 import java.io.BufferedReader;
 import java.io.File;
