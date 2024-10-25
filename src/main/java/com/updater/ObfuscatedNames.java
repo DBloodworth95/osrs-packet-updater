@@ -51,13 +51,11 @@ public class ObfuscatedNames {
     public static final String packetBufferFieldName = "ak";
     public static final String addNodeGarbageValue = "486";
     public static final String addNodeMethodName = "ak";
-    public static final String getPacketBufferNodeGarbageValue = "78"; //Just do a search for the classContainingGetPacketBufferNodeName usages and pick one of the byte values
+    public static final String getPacketBufferNodeGarbageValue = "78";
 
     /*
         Obfuscated names for buffer methods
      */
-
-    //To find these, basically search for the packetBufferNodeClassName class and find the field packetBufferFieldName and then find the type of that, find what it extends and it will be the byte[] and int properties
     public static final String bufferOffsetField = "am";
     public static final String bufferArrayField = "ae";
     public static final String indexMultiplier = "-1689308347";
