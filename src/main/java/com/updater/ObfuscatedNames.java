@@ -49,7 +49,7 @@ public class ObfuscatedNames {
     public static final String isaacCipherFieldName = "ai";
     public static final String packetBufferNodeClassName = "me";
     public static final String packetBufferFieldName = "ak";
-    public static final String addNodeGarbageValue = "486"; //Just do a search in client.java packetWriterClassName property at class level, then search the variablename.addNodeMethodName
+    public static final String addNodeGarbageValue = "486";
     public static final String addNodeMethodName = "ak";
     public static final String getPacketBufferNodeGarbageValue = "78"; //Just do a search for the classContainingGetPacketBufferNodeName usages and pick one of the byte values
 

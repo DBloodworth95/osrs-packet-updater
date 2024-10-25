@@ -83,6 +83,7 @@ public class ObfuscatedNameUpdater {
 
     private static void registerValueSearchers() {
         patternSearchers.add(new AddNodeGarbageValue());
+        patternSearchers.add(new GetPacketBufferNodeGarbageValue());
     }
 
     private static void searchDirectory(File dir) {
