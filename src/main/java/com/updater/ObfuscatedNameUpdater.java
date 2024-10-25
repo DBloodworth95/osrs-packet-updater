@@ -69,21 +69,22 @@ public class ObfuscatedNameUpdater {
     private static void registerFieldSearchers() {
         patternSearchers.add(new PacketWriterFieldName());
         patternSearchers.add(new MouseHandlerLastPressedTimeMillisField());
-        patternSearchers.add(new MouseHandlerMillisMultiplier());
-        patternSearchers.add(new ClientMillisMultiplier());
         patternSearchers.add(new ClientMillisField());
         patternSearchers.add(new IsaacCipherFieldName());
         patternSearchers.add(new PacketBufferNodeFieldName());
         patternSearchers.add(new EventMouseClickObfuscatedName());
         patternSearchers.add(new BufferOffsetField());
         patternSearchers.add(new BufferArrayField());
-        patternSearchers.add(new OffsetMultiplier());
-        patternSearchers.add(new IndexMultiplier());
+
     }
 
     private static void registerValueSearchers() {
         patternSearchers.add(new AddNodeGarbageValue());
         patternSearchers.add(new GetPacketBufferNodeGarbageValue());
+        patternSearchers.add(new OffsetMultiplier());
+        patternSearchers.add(new IndexMultiplier());
+        patternSearchers.add(new MouseHandlerMillisMultiplier());
+        patternSearchers.add(new ClientMillisMultiplier());
     }
 
     private static void searchDirectory(File dir) {
