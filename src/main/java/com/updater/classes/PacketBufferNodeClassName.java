@@ -2,11 +2,12 @@ package com.updater.classes;
 
 import com.updater.PatternSearcher;
 import com.updater.SearchContext;
+import com.updater.search.SearchQuery;
+import com.updater.search.SearchResult;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
  * Steps to find are as follows:
@@ -18,28 +19,24 @@ public class PacketBufferNodeClassName implements PatternSearcher {
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
-        try {
-            List<String> lines = Files.readAllLines(file.toPath());
-            String currentClassName = null;
+        String className = extractClassName(content);
+        SearchQuery query = new SearchQuery(content)
+                .extendsAnyClass()
+                .withPropertyAssignmentPattern("new " + className + "\\[300\\]")
+                .fromClass();
 
-            for (String line : lines) {
-                line = line.trim();
-                if (line.startsWith("public class") && line.contains("extends")) {
-                    String[] parts = line.split("\\s+");
-                    if (parts.length >= 3) {
-                        currentClassName = parts[2];
-                    }
-                }
-
-                if (currentClassName != null && line.contains("new " + currentClassName + "[300]")) {
-                    packetBufferNodeClassName = currentClassName;
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        SearchResult result = query.execute();
+        if (result.meetsRequirements()) {
+            packetBufferNodeClassName = result.getResult();
+            return true;
         }
+
         return false;
+    }
+
+    private String extractClassName(String content) {
+        Matcher matcher = Pattern.compile("\\bclass\\s+(\\w+)").matcher(content);
+        return matcher.find() ? matcher.group(1) : "Unknown";
     }
 
     @Override
