@@ -2,6 +2,8 @@ package com.updater.classes;
 
 import com.updater.PatternSearcher;
 import com.updater.SearchContext;
+import com.updater.search.SearchQuery;
+import com.updater.search.SearchResult;
 
 import java.io.File;
 
@@ -17,21 +19,18 @@ public class DoActionClassName implements PatternSearcher {
 
     @Override
     public boolean matches(File file, String content, SearchContext context) {
-        String[] lines = content.split("\n");
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i].trim();
-            if (line.contains("(int") && line.contains("String")) {
-                if (isDoActionMethodSignature(line)) {
-                    if (checkForTryAndNull(lines, i + 1)) {
-                        doActionClassName = findClassName(lines, i);
+        SearchQuery query = new SearchQuery(content)
+                .withMethodSignature("\\(int var0, int var1, int var2, int var3, int var4, int var5, String var6, String var7, int var8, int var9, int var10\\)")
+                .withFollowingPattern("try \\{")
+                .withFollowingPattern("= null;")
+                .fromClass();
 
-                        return true;
-                    }
-                }
-            }
+        SearchResult result = query.execute();
+        if (result.meetsRequirements()) {
+            doActionClassName = result.getResult();
         }
 
-        return false;
+        return !doActionClassName.equals("Unknown");
     }
 
     @Override
@@ -42,48 +41,5 @@ public class DoActionClassName implements PatternSearcher {
     @Override
     public String getDescription() {
         return "DoActionClassName";
-    }
-
-    private String findClassName(String[] lines, int methodIndex) {
-        for (int i = methodIndex; i >= 0; i--) {
-            String line = lines[i].trim();
-            if (line.contains("class ")) {
-                return extractClassName(line);
-            }
-        }
-
-        return "Unknown";
-    }
-
-    private String extractClassName(String line) {
-        int classIndex = line.indexOf("class");
-        if (classIndex != -1) {
-            String[] parts = line.substring(classIndex).split("\\s+");
-            if (parts.length > 1) {
-                return parts[1];
-            }
-        }
-
-        return "Unknown";
-    }
-
-
-    private boolean isDoActionMethodSignature(String line) {
-        return line.contains("(int var0, int var1, int var2, int var3, int var4, int var5, String var6, String var7, int var8, int var9, int var10)");
-    }
-
-    private boolean checkForTryAndNull(String[] lines, int startIndex) {
-        for (int i = startIndex; i < lines.length && i < startIndex + 5; i++) {
-            String line = lines[i].trim();
-            if (line.startsWith("try {")) {
-                for (int j = i + 1; j < lines.length && j < i + 5; j++) {
-                    if (lines[j].trim().contains("= null;")) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 }
